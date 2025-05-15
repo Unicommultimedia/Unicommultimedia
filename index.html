@@ -243,3 +243,43 @@
   </script>
 </body>
 </html>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("/get-products")
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(product => {
+          const container = document.getElementById(product.type);
+          const productItem = document.createElement('div');
+          productItem.className = 'product-item';
+
+          // Tampilkan gambar
+          const imageContainer = document.createElement('div');
+          imageContainer.className = 'product-images';
+          product.photos.forEach(photo => {
+            const img = document.createElement('img');
+            img.src = `/uploads/${photo}`;
+            imageContainer.appendChild(img);
+          });
+
+          // Info
+          const info = document.createElement('div');
+          info.innerHTML = `
+            <strong>Harga:</strong> ${product.price}<br>
+            <p>${product.description}</p>
+            ${isLoggedIn ? `
+              <div class="product-actions">
+                <button onclick="markAsSold(this)">Tandai Terjual</button>
+                <button onclick="deleteProduct(this)">Hapus</button>
+              </div>
+            ` : ""}
+          `;
+
+          productItem.appendChild(imageContainer);
+          productItem.appendChild(info);
+          container.appendChild(productItem);
+        });
+      });
+  });
+</script>
+
